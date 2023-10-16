@@ -35,8 +35,17 @@ export class User extends BaseSchema {
   @Prop({ type: String, required: true })
   password: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   interestArea?: string[];
+
+  @Prop({ required: false })
+  wantPair?: boolean;
+
+  @Prop({ required: false })
+  availability?: number;
+
+  @Prop({ required: false })
+  pairAvailability?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

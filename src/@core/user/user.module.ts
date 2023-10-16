@@ -7,6 +7,8 @@ import { User, UserSchema } from '../infra/db/schema/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CreateUserUseCase } from './use-case/create-user.use-case';
 import { GetUserByEmailUseCase } from './use-case/get-user-by-email.use-case';
+import { GetUserByIdUseCase } from './use-case/get-user-by-id.use-case';
+import { PartialCreateUserUseCase } from './use-case/partial-create-user.use-case';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { GetUserByEmailUseCase } from './use-case/get-user-by-email.use-case';
   ],
   controllers: [UserController],
   providers: [
+    PartialCreateUserUseCase,
     GetUserByEmailUseCase,
+    GetUserByIdUseCase,
     CreateUserUseCase,
     UserService,
     {

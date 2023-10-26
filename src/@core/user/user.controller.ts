@@ -4,6 +4,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserModelView } from './model-view/get-user.mv';
 import { PartialCreateUserDto } from './dto/partial-create-user.dto';
+import { CreateUserTypeDto } from './dto/create-user-type.dto';
+import { GetUserTypeModelView } from './model-view/get-user-type.mv';
 
 @ApiTags('User')
 @Controller('user')
@@ -14,6 +16,17 @@ export class UserController {
   async createUser(@Body() dto: CreateUserDto): Promise<GetUserModelView> {
     try {
       return await this.userService.createUser(dto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('/type')
+  async createUserType(
+    @Body() dto: CreateUserTypeDto,
+  ): Promise<GetUserTypeModelView> {
+    try {
+      return await this.userService.createUserType(dto);
     } catch (error) {
       throw error;
     }

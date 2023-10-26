@@ -7,6 +7,7 @@ import { InfraModule } from '@config/infra.module';
 import { AuthModule } from '@core/auth/auth.module';
 import { UserModule } from '@core/user/user.module';
 import { Module } from '@nestjs/common';
+import { EmailModule } from './@core/email/email.module';
 
 const config = new ConfigService().get('mongo');
 
@@ -19,6 +20,7 @@ const restImports = [
   InfraModule,
   AuthModule,
   UserModule,
+  EmailModule,
 ];
 
 @Module({

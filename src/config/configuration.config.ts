@@ -29,6 +29,12 @@ export class ConfigService {
       api_secret: process.env.CLOUDINARY_API_SECRET,
       secure: true,
     };
+    this.envConfig.mailer = {
+      host: process.env.MAIL_HOST,
+      user: process.env.MAIL_USER,
+      password: process.env.MAIL_PASSWORD,
+      mailFrom: process.env.MAIL_FROM,
+    };
   }
   get(key: string): any {
     return this.envConfig[key];

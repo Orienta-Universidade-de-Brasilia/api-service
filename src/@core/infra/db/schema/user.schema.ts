@@ -2,7 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { BaseSchema } from './base.schema';
 import * as bcrypt from 'bcrypt';
-import { UserType } from '@app/@core/user/types/user.types';
+import { UserType } from './userType.schema';
+import { InterestedArea } from './interestedArea.schema';
+import { Availability } from './availability.schema';
 
 export type UserDocument = User & Document;
 
@@ -23,29 +25,29 @@ export class User extends BaseSchema {
   @Prop({ type: String, required: false })
   cellPhone?: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, unique: true })
   email: string;
 
   @Prop({ type: String, required: false })
-  imageUrl?: string;
+  avatarUrl?: string;
 
-  @Prop({ type: String, enum: UserType, required: false })
-  role?: `${UserType}`;
+  @Prop({ required: false })
+  userType?: UserType;
 
   @Prop({ type: String, required: true })
   password: string;
 
   @Prop({ required: false })
-  interestArea?: string[];
+  interestedArea?: InterestedArea[];
 
   @Prop({ required: false })
-  wantPair?: boolean;
+  availableToPair?: boolean; // students will set this param
 
   @Prop({ required: false })
-  availability?: number;
+  availability?: Availability; // professor will set this param
 
-  @Prop({ required: false })
-  pairAvailability?: number;
+  @Prop({ required: true, default: false })
+  emailConfirmed?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

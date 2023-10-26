@@ -15,16 +15,17 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(dto: CreateUserDto): Promise<GetUserModelView> {
-    const profileType = this.checkProfileDomainByEmail(dto.email);
+    const domain = this.checkProfileDomainByEmail(dto.email);
+    const userType = await this.userRepository.getUserTypeByName(
+      UserType[domain],
+    );
     const payload: CreateUserDto = {
       ...dto,
-      role: UserType[profileType],
+      userType,
       isActive: true,
     };
 
     const model = await this.userRepository.create(payload);
-
-    delete model.password;
 
     return model as unknown as GetUserModelView;
   }

@@ -1,6 +1,6 @@
+import { UserType } from '@app/@core/infra/db/schema/userType.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, Length } from 'class-validator';
-import { UserType } from '../types/user.types';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -19,5 +19,5 @@ export class CreateUserDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  readonly role?: `${UserType}`;
+  readonly userType?: UserType;
 }

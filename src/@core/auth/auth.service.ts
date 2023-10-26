@@ -13,19 +13,48 @@ export class AuthService {
   async login(user) {
     const payload = {
       sub: user.id,
+      fullName: user.fullName,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      avatarUrl: user.avatarUrl,
+      userType: user.userType.description,
+      emailConfirmed: user.emailConfirmed,
+      isActive: user.isActive,
     };
 
     return {
-      token: this.jwtService.sign(payload),
+      accesstoken: await this.jwtService.signAsync(payload, {
+        algorithm: 'HS256',
+      }),
+      refreshToken: await this.jwtService.signAsync(payload, {
+        algorithm: 'HS256',
+        expiresIn: process.env.EXPIRES_TIME,
+      }),
+    };
+  }
+
+  async refreshToken(user) {
+    const payload = {
+      sub: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatarUrl: user.avatarUrl,
+      userType: user.userType?.description,
+      emailConfirmed: user.emailConfirmed,
+      isActive: user.isActive,
+    };
+
+    return {
+      accesstoken: this.jwtService.sign(payload),
     };
   }
 
   async validateUser(email: string, password: string) {
     try {
-      const user = await this.userService.getByEmail(email);
+      const user = await this.userService.authGetByEmail(email);
 
       const isPasswordValid = bcrypt.compareSync(password, user.password);
 

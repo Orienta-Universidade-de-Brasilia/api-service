@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsPhoneNumber,
   IsString,
-  Min,
 } from 'class-validator';
 
 export class PartialCreateUserDto {
@@ -21,6 +20,11 @@ export class PartialCreateUserDto {
   lastName: string;
 
   @ApiProperty()
+  @IsString()
+  @IsOptional()
+  fullName?: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   @IsPhoneNumber('BR')
   cellPhone: string;
@@ -32,15 +36,21 @@ export class PartialCreateUserDto {
 
   @ApiProperty({ required: false, default: false })
   @IsOptional()
-  wantPair?: boolean;
+  avaliableToPair?: boolean;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @Min(1)
-  availability?: number;
+  availability?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @Min(1)
-  pairAvailability?: number;
+  campusInformation?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  contact?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  pictureId?: string;
 }

@@ -8,17 +8,26 @@ import { JwtStrategy } from '@common/strategies/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { LoginValidationMiddleware } from '@app/common/middleware/jwt.middleware';
 import { RefreshTokenStrategy } from '@app/common/strategies/refresh-token.strategy';
+import { PeriodModule } from '../period/period.module';
+import { GetAuthByEmailUseCase } from './use-case/get-auth-by-email.use-case';
 
 @Module({
   imports: [
     UserModule,
+    PeriodModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET_KEY,
-      signOptions: { expiresIn: '2h' },
+      signOptions: { expiresIn: '5h' },
     }),
   ],
-  providers: [AuthService, LocalStrategy, RefreshTokenStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    RefreshTokenStrategy,
+    JwtStrategy,
+    GetAuthByEmailUseCase,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule implements NestModule {

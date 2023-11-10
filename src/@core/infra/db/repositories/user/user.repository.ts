@@ -7,6 +7,8 @@ import { CreateUserDto } from '@app/@core/user/dto/create-user.dto';
 import { PartialCreateUserDto } from '@app/@core/user/dto/partial-create-user.dto';
 import { UserType, UserTypeDocument } from '../../schema/userType.schema';
 import { Code, CodeDocument } from '../../schema/code.schema';
+import { UserModelView } from '@app/@core/auth/model-view/user.mv';
+import { PageDto, PageMetaDto, PageOptionsDto } from '@app/@core/common/dto';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -102,5 +104,32 @@ export class UserRepository implements IUserRepository {
       { $set: { emailConfirmed: confirmation } },
     );
     return updateData.acknowledged;
+  }
+
+  async listUsers(
+    user: UserModelView,
+    filters: PageOptionsDto,
+  ): Promise<PageDto<User>> {
+    const baseQuery = {
+      _id: {
+        $ne: user.id,
+      },
+    };
+
+    const [itemCount, entities] = await Promise.all([
+      this.userModel.countDocuments(baseQuery).exec(),
+      this.userModel
+        .find(baseQuery)
+        .skip(filters.skip)
+        .limit(filters.take)
+        .exec(),
+    ]);
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: filters,
+    });
+
+    return new PageDto(entities, pageMetaDto);
   }
 }

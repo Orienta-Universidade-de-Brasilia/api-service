@@ -16,12 +16,7 @@ import { EmailService } from './email.service';
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: {
-          host: config.get('MAIL_HOST'),
-          port: 587,
-          tls: {
-            rejectUnauthorized: false,
-          },
-          secure: false,
+          service: 'Outlook',
           auth: {
             user: config.get('MAIL_USER'),
             pass: config.get('MAIL_PASSWORD'),

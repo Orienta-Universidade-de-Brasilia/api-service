@@ -21,6 +21,13 @@ export class RefreshTokenStrategy extends PassportStrategy(
       email: payload.email,
       firstName: payload.firstName,
       lastName: payload.lastName,
+      fullName: payload.fullName,
+      avatarUrl: payload.avatarUrl,
+      userType: payload.userType,
+      emailConfirmed: payload.emailConfirmed,
+      isActive: payload.isActive,
+      year: payload.year,
+      period: payload.period,
     };
   }
 }

@@ -1,4 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UserModelView {
   @IsString()
@@ -27,4 +33,12 @@ export class UserModelView {
   @IsNotEmpty()
   @IsBoolean()
   isActive: boolean;
+
+  @IsNotEmpty()
+  @IsNumber()
+  period: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  year: number;
 }

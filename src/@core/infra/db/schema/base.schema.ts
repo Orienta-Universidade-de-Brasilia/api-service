@@ -1,17 +1,21 @@
 import { Prop, Schema } from '@nestjs/mongoose';
+import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 
 @Schema()
-export class BaseSchema extends Document {
+export abstract class BaseSchema extends Document {
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
 
   @Prop({ type: Date, default: Date.now })
-  createdAt: Date;
+  @Exclude()
+  public createdAt: Date;
 
   @Prop({ type: Date, default: Date.now })
-  updatedAt: Date;
+  @Exclude()
+  public updatedAt: Date;
 
   @Prop({ type: Date, default: null })
-  deletedAt: Date;
+  @Exclude()
+  public deletedAt: Date;
 }

@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -6,9 +16,14 @@ import { GetUserModelView } from './model-view/get-user.mv';
 import { PartialCreateUserDto } from './dto/partial-create-user.dto';
 import { CreateUserTypeDto } from './dto/create-user-type.dto';
 import { GetUserTypeModelView } from './model-view/get-user-type.mv';
+import { Requester } from '@app/common/decorators/user.decorator';
+import { UserModelView } from '../auth/model-view/user.mv';
+import { JwtAuthGuard } from '@app/common/guards/jwt-auth.guard';
+import { PageDto, PageOptionsDto } from '../common/dto';
 
 @ApiTags('User')
 @Controller('user')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -48,6 +63,19 @@ export class UserController {
   ): Promise<GetUserModelView> {
     try {
       return await this.userService.partialCreateUser(id, dto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get()
+  async findOne(
+    @Requester(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserModelView,
+    @Query() filters: PageOptionsDto,
+  ): Promise<PageDto<GetUserModelView>> {
+    try {
+      return await this.userService.listUsers(user, filters);
     } catch (error) {
       throw error;
     }

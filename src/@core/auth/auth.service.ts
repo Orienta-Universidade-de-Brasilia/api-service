@@ -1,27 +1,41 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UserService } from '../user/user.service';
 import { User } from '../infra/db/schema/user.schema';
+import { Period } from '../infra/db/schema/period.schema';
+import { authModelView } from '../user/model-view/get-user.mv';
+import { GetAuthByEmailUseCase } from './use-case/get-auth-by-email.use-case';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly getAuthByEmailUseCase: GetAuthByEmailUseCase,
   ) {}
 
-  async login(user: User) {
+  async authGetByEmail(email: string): Promise<authModelView> {
+    const response = await this.getAuthByEmailUseCase.execute(email);
+
+    if (!response) {
+      throw new BadRequestException('Cannot find user with this e-mail');
+    }
+
+    return response;
+  }
+
+  async login(user: User, period: Period) {
     const payload = {
       sub: user.id,
-      fullName: user.fullName,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      fullName: user.fullName,
       avatarUrl: user.avatarUrl,
       userType: user.userType.description,
       emailConfirmed: user.emailConfirmed,
       isActive: user.isActive,
+      year: period?.year,
+      period: period?.period,
     };
 
     return {
@@ -35,17 +49,19 @@ export class AuthService {
     };
   }
 
-  async refreshToken(user) {
+  async refreshToken(user: User, period: Period) {
     const payload = {
       sub: user.id,
-      fullName: user.fullName,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      fullName: user.fullName,
       avatarUrl: user.avatarUrl,
-      userType: user.userType?.description,
+      userType: user.userType.description,
       emailConfirmed: user.emailConfirmed,
       isActive: user.isActive,
+      year: period.year,
+      period: period.period,
     };
 
     return {
@@ -55,7 +71,7 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     try {
-      const user = await this.userService.authGetByEmail(email);
+      const user = await this.authGetByEmail(email);
 
       const isPasswordValid = bcrypt.compareSync(password, user.password);
 

@@ -10,6 +10,7 @@ import { GetUserByIdUseCase } from './use-case/get-user-by-id.use-case';
 import { PartialCreateUserUseCase } from './use-case/partial-create-user.use-case';
 import { UserFeature } from '@infra/db/imports/user';
 import { CreateUserTypeUseCase } from './use-case/create-user-type.use-case';
+import { ListUsersUseCase } from './use-case/list-users.use-case';
 
 @Module({
   imports: [MongooseModule.forFeature(UserFeature)],
@@ -20,6 +21,7 @@ import { CreateUserTypeUseCase } from './use-case/create-user-type.use-case';
     GetUserByIdUseCase,
     CreateUserTypeUseCase,
     CreateUserUseCase,
+    ListUsersUseCase,
     UserService,
     {
       useClass: UserRepository,

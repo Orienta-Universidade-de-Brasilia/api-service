@@ -1,3 +1,6 @@
+import { PageDto } from './../../common/dto/page.dto';
+import { UserModelView } from '@app/@core/auth/model-view/user.mv';
+import { PageOptionsDto } from '@app/@core/common/dto';
 import { Code } from '@app/@core/infra/db/schema/code.schema';
 import { User } from '@app/@core/infra/db/schema/user.schema';
 import { UserType } from '@app/@core/infra/db/schema/userType.schema';
@@ -16,4 +19,8 @@ export interface IUserRepository {
   updateCodeByUserId(userId: string, code: string): Promise<number>;
   getCodeByUserId(userId: string): Promise<Code>;
   confirmEmailByUserId(userId: string, confirmation: boolean): Promise<boolean>;
+  listUsers(
+    user: UserModelView,
+    filters: PageOptionsDto,
+  ): Promise<PageDto<User>>;
 }

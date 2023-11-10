@@ -1,15 +1,19 @@
+import { PageDto } from './../common/dto/page.dto';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { CreateUserUseCase } from './use-case/create-user.use-case';
 import { GetUserByEmailUseCase } from './use-case/get-user-by-email.use-case';
-import { GetUserModelView, authModelView } from './model-view/get-user.mv';
+import { GetUserModelView } from './model-view/get-user.mv';
 import { PartialCreateUserDto } from './dto/partial-create-user.dto';
 import { PartialCreateUserUseCase } from './use-case/partial-create-user.use-case';
 import { GetUserByIdUseCase } from './use-case/get-user-by-id.use-case';
 import { CreateUserTypeDto } from './dto/create-user-type.dto';
 import { GetUserTypeModelView } from './model-view/get-user-type.mv';
 import { CreateUserTypeUseCase } from './use-case/create-user-type.use-case';
+import { UserModelView } from '../auth/model-view/user.mv';
+import { ListUsersUseCase } from './use-case/list-users.use-case';
+import { PageOptionsDto } from '../common/dto';
 
 @Injectable()
 export class UserService {
@@ -19,6 +23,7 @@ export class UserService {
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     private readonly partialCreateUserUseCase: PartialCreateUserUseCase,
     private readonly createUserTypeUseCase: CreateUserTypeUseCase,
+    private readonly listUsersUseCase: ListUsersUseCase,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<GetUserModelView> {
@@ -26,16 +31,6 @@ export class UserService {
 
     if (!response) {
       throw new BadRequestException('Cannot create user');
-    }
-
-    return response;
-  }
-
-  async authGetByEmail(email: string): Promise<authModelView> {
-    const response = await this.getUserByEmailUseCase.execute(email);
-
-    if (!response) {
-      throw new BadRequestException('Cannot find user with this e-mail');
     }
 
     return response;
@@ -56,6 +51,19 @@ export class UserService {
 
     if (!response) {
       throw new BadRequestException('Cannot find user with this id');
+    }
+
+    return response;
+  }
+
+  async listUsers(
+    user: UserModelView,
+    filters: PageOptionsDto,
+  ): Promise<PageDto<GetUserModelView>> {
+    const response = await this.listUsersUseCase.execute(user, filters);
+
+    if (!response) {
+      throw new BadRequestException('Cannot list users');
     }
 
     return response;

@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { UserType } from './userType.schema';
 import { InterestedArea } from './interestedArea.schema';
 import { Availability } from './availability.schema';
+import { Exclude } from 'class-transformer';
 
 export type UserDocument = User & Document;
 
@@ -35,6 +36,7 @@ export class User extends BaseSchema {
   userType?: UserType;
 
   @Prop({ type: String, required: true })
+  @Exclude()
   password: string;
 
   @Prop({ required: false })

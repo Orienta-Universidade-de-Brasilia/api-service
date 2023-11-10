@@ -3,7 +3,7 @@ import {
   UserRepositoryKey,
 } from '@app/@core/interfaces/user/user.interface';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { randomBytes } from 'crypto';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class GenerateCodeUseCase {
@@ -13,14 +13,14 @@ export class GenerateCodeUseCase {
   ) {}
 
   async execute(email: string) {
-    const code = randomBytes(3).toString('hex');
+    const code = randomInt(6).toString();
     const [response, user] = await Promise.all([
       this.userRepository.saveCodeGenerated(email, code),
       this.userRepository.getByEmail(email),
     ]);
 
     if (!user) {
-      throw new BadRequestException('Cannot find user to resend confirmation');
+      throw new BadRequestException('Cannot find user to send confirmation');
     }
 
     return {

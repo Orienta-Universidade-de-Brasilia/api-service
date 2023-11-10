@@ -1,11 +1,11 @@
 import { CreateUserDto } from '../dto/create-user.dto';
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   IUserRepository,
   UserRepositoryKey,
 } from '../../interfaces/user/user.interface';
 import { GetUserModelView } from '../model-view/get-user.mv';
-import { ProfileDomain, UserType } from '../types/user.types';
+import { ProfileDomain, UserTypeEnum } from '../types/user.types';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -16,8 +16,11 @@ export class CreateUserUseCase {
 
   async execute(dto: CreateUserDto): Promise<GetUserModelView> {
     const domain = this.checkProfileDomainByEmail(dto.email);
+    if (!domain) {
+      throw new BadRequestException('Invalid domain - use UnB Domains only');
+    }
     const userType = await this.userRepository.getUserTypeByName(
-      UserType[domain],
+      UserTypeEnum[domain],
     );
     const payload: CreateUserDto = {
       ...dto,

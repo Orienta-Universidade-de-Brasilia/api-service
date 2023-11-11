@@ -120,6 +120,7 @@ export class UserRepository implements IUserRepository {
       this.userModel.countDocuments(baseQuery).exec(),
       this.userModel
         .find(baseQuery)
+        .sort({ createdAt: filters.order })
         .skip(filters.skip)
         .limit(filters.take)
         .exec(),

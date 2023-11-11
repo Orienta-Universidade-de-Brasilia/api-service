@@ -69,7 +69,7 @@ export class UserController {
   }
 
   @Get()
-  async findOne(
+  async listUsers(
     @Requester(new ValidationPipe({ validateCustomDecorators: true }))
     user: UserModelView,
     @Query() filters: PageOptionsDto,

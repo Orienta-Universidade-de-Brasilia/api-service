@@ -19,6 +19,12 @@ export class CreateUserUseCase {
     if (!domain) {
       throw new BadRequestException('Invalid domain - use UnB Domains only');
     }
+    const exist = await this.userRepository.getByEmail(dto.email);
+
+    if (exist) {
+      throw new BadRequestException('There is an user with this email');
+    }
+
     const userType = await this.userRepository.getUserTypeByName(
       UserTypeEnum[domain],
     );

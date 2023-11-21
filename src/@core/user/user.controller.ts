@@ -20,6 +20,7 @@ import { Requester } from '@app/common/decorators/user.decorator';
 import { UserModelView } from '../auth/model-view/user.mv';
 import { JwtAuthGuard } from '@app/common/guards/jwt-auth.guard';
 import { PageDto, PageOptionsDto } from '../common/dto';
+import { Public } from '@app/common/decorators/auth.decorator';
 
 @ApiTags('User')
 @Controller('user')
@@ -28,6 +29,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @Public()
   async createUser(@Body() dto: CreateUserDto): Promise<GetUserModelView> {
     try {
       return await this.userService.createUser(dto);
@@ -57,6 +59,7 @@ export class UserController {
   }
 
   @Put(':id')
+  @Public()
   async partialCreateUser(
     @Param('id') id: string,
     @Body() dto: PartialCreateUserDto,

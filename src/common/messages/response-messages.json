@@ -1,0 +1,8 @@
+{
+  "authentication": {
+    "post": {
+      "error": "Invalid request authentication user",
+      "success": "user authenticated successfully"
+    }
+  }
+}

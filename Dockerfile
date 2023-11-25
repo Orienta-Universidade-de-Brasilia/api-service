@@ -7,8 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.* ./
 
-# Instale as dependências
-RUN npm install
+RUN npm install --quiet --no-optional --no-fund --loglevel=error
 
 COPY . .
 

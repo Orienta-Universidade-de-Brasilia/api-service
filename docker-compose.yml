@@ -1,13 +1,10 @@
-version: '3.5'
-
+version: '3'
 services:
-  api-prod:
-    container_name: api_prod_container
-    build: .
-    hostname: api_service
-    command: npm run start:prod
-    volumes:
-      - .:/app
+  # Serviço do aplicativo Nest.js
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile # Nome do seu Dockerfile
     ports:
       - '${PORT}:${PORT}'
     networks:
@@ -21,7 +18,7 @@ services:
     hostname: api_service
     command: npm run start:dev
     volumes:
-      - .:/app
+      - .:/var/www/server
     ports:
       - '${PORT}:${PORT}'
     networks:
@@ -35,7 +32,7 @@ services:
     hostname: api_service
     command: npm run start:debug
     volumes:
-      - .:/app
+      - .:/var/www/server
     ports:
       - '${PORT}:${PORT}'
       - '9229:9229'
@@ -45,19 +42,9 @@ services:
       - .env
 
   mongo:
-    container_name: mongo
-    image: mongo
-    volumes:
-      - mongo_data:/data/db
+    image: mongo:latest
     ports:
-      - 27017:27017
-    networks:
-      - backend
+      - '27017:27017' # Porta padrão do MongoDB
 
-networks:
-  backend:
-    name: orienta_network
-    driver: bridge
 
-volumes:
-  mongo_data:
+  # Outros serviços podem ser adicionados conforme necessário

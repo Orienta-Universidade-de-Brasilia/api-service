@@ -1,19 +1,15 @@
+# Use a imagem oficial do Node.js como base
+FROM node:18-alpine
 
-ARG NODE_VERSION=18-alpine
-ARG NPM_VERSION=9
+# Crie e defina o diretório de trabalho dentro do contêiner
+WORKDIR /app
 
-FROM node:${NODE_VERSION}
+COPY . .
 
-RUN npm install -g npm@${NPM_VERSION}
-RUN mkdir -p /var/www/server
-
-WORKDIR /var/www/server
-
-ADD . /var/www/server/
-
+# Instale as dependências
 RUN npm install
+
 RUN npm run build
 
-EXPOSE 8000
-
-CMD ["npm", "start:prod"]
+# Comando para iniciar a aplicação
+CMD ["npm", "run", "start:prod"]

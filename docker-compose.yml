@@ -1,63 +1,36 @@
-version: '3.5'
+version: '3'
 
 services:
-  api-prod:
-    container_name: api_prod_container
-    build: .
-    hostname: api_service
-    command: npm run start:prod
-    volumes:
-      - .:/var/www/server
+  nestjs:
+    build: ./
+    container_name: orientaunb_api
+    environment:
+      - PORT=3000
+      - SERVICE_TITLE=Orienta UnB Api
+      - SERVICE_DESCRIPTION=Orienta UnB Api
+      - SERVICE_VERSION=0.1.0
+      - SERVICE_TAG=1
+      - MONGO_DATABASE=orientaDB-dev
+      - MONGO_USER=hufflepuff
+      - MONGO_HOST=orientaunbdevcluster.enczr6j.mongodb.net
+      - MONGO_PASSWORD=Ei0CLjRVN3aexFOj
+      - JWT_SECRET_KEY=P2LLSukoCUFpIuQjNYeQd2m5nAasDnEFmnp9DAsO/sU=
     ports:
-      - '${PORT}:${PORT}'
+      - '3000:3000'
+    depends_on:
+      - mongodb
     networks:
-      - backend
-    env_file:
-      - .env
+      - orientaunb_networks
 
-  api-dev:
-    container_name: api_dev_container
-    build: .
-    hostname: api_service
-    command: npm run start:dev
-    volumes:
-      - .:/var/www/server
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_db
     ports:
-      - '${PORT}:${PORT}'
-    networks:
-      - backend
-    env_file:
-      - .env
-
-  api-debug:
-    container_name: api_debug_container
-    build: .
-    hostname: api_service
-    command: npm run start:debug
+      - '27017:27017'
     volumes:
-      - .:/var/www/server
-    ports:
-      - '${PORT}:${PORT}'
-      - '9229:9229'
+      - ./mongo-volumes:/data/db
     networks:
-      - backend
-    env_file:
-      - .env
-
-  mongo:
-    container_name: mongo
-    image: mongo
-    volumes:
-      - mongo_data:/data/db
-    ports:
-      - 27017:27017
-    networks:
-      - backend
+      - orientaunb_networks
 
 networks:
-  backend:
-    name: orienta_network
-    driver: bridge
-
-volumes:
-  mongo_data:
+  orientaunb_networks:

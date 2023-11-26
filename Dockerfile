@@ -1,19 +1,33 @@
+#build stage
+FROM node:18-alpine AS build
 
-ARG NODE_VERSION=18-alpine
-ARG NPM_VERSION=9
+WORKDIR /usr/src/app
 
-FROM node:${NODE_VERSION}
-
-RUN npm install -g npm@${NPM_VERSION}
-RUN mkdir -p /var/www/server
-
-WORKDIR /var/www/server
-
-ADD . /var/www/server/
+COPY package*.json ./
 
 RUN npm install
+
+COPY . .
+
 RUN npm run build
 
-EXPOSE 8000
 
-CMD ["npm", "start:prod"]
+#prod stage
+FROM node:18-alpine
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/dist ./dist
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
+RUN rm package*.json
+
+EXPOSE 3000
+
+CMD [ "node", "dist/main.js" ]

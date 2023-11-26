@@ -1,0 +1,31 @@
+name: production
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-ec2:
+    name: Deploy EC2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the files
+        uses: actions/checkout@v2
+
+      - name: Executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST_DNS }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            branch_name=$(basename "${{ github.ref }}")
+            echo "Branch name is $branch_name"
+            cd app/api-service
+            sudo git clean -fdx
+            sudo git fetch
+            sudo git checkout $branch_name
+            sudo git pull
+            sudo docker compose -f docker-compose up --force-recreate --build --pull --remove-orphans -d

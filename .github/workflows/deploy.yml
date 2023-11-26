@@ -1,4 +1,4 @@
-name: production
+name: Deploy
 
 on:
   workflow_dispatch:
@@ -23,6 +23,7 @@ jobs:
           script: |
             branch_name=$(basename "${{ github.ref }}")
             echo "Branch name is $branch_name"
+            ls -la app/api-service
             cd app/api-service
             sudo git clean -fdx
             sudo git fetch

@@ -14,6 +14,8 @@ import { CreateUserTypeUseCase } from './use-case/create-user-type.use-case';
 import { UserModelView } from '../auth/model-view/user.mv';
 import { ListUsersUseCase } from './use-case/list-users.use-case';
 import { PageOptionsDto } from '../common/dto';
+import { GetAllUseCase } from './use-case/get-all.use-case';
+import { SetRecommendationUseCase } from './use-case/set-recommendation.use-case';
 
 @Injectable()
 export class UserService {
@@ -24,6 +26,8 @@ export class UserService {
     private readonly partialCreateUserUseCase: PartialCreateUserUseCase,
     private readonly createUserTypeUseCase: CreateUserTypeUseCase,
     private readonly listUsersUseCase: ListUsersUseCase,
+    private readonly getAllUseCase: GetAllUseCase,
+    private readonly setRecommendationUseCase: SetRecommendationUseCase,
   ) {}
 
   async createUser(dto: CreateUserDto): Promise<GetUserModelView> {
@@ -92,5 +96,22 @@ export class UserService {
     const user = await this.getUserById(id);
 
     return user;
+  }
+
+  async recommendUser(
+    currentUser: UserModelView,
+    search?: string,
+  ): Promise<GetUserModelView[]> {
+    const users = await this.getAllUseCase.execute(currentUser, search);
+
+    if (!currentUser.interestedArea.length) {
+      return users;
+    }
+
+    const response = await this.setRecommendationUseCase.execute(
+      currentUser,
+      users,
+    );
+    return response;
   }
 }

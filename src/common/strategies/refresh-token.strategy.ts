@@ -24,6 +24,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
       fullName: payload.fullName,
       avatarUrl: payload.avatarUrl,
       userType: payload.userType,
+      interestedArea: payload.interestedArea,
       emailConfirmed: payload.emailConfirmed,
       isActive: payload.isActive,
       year: payload.year,

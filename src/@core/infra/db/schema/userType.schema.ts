@@ -6,8 +6,8 @@ export type UserTypeDocument = UserType & Document;
 
 @Schema()
 export class UserType extends BaseSchema {
-  @Prop({ type: String, required: false })
-  description?: string;
+  @Prop({ type: String })
+  description: string;
 }
 
 export const UserTypeSchema = SchemaFactory.createForClass(UserType);

@@ -7,9 +7,9 @@ import {
   Availability,
   AvailabilitySchema,
 } from '@infra/db/schema/availability.schema';
-import { PairUp, PairUpSchema } from '@infra/db/schema/pairUp.schema';
 import { User, UserSchema } from '@infra/db/schema/user.schema';
 import { Code, CodeSchema } from '../../schema/code.schema';
+import { PairUp, PairUpSchema } from '../../schema/pair-up.schema';
 
 export const UserFeature = [
   { name: User.name, schema: UserSchema },

@@ -23,4 +23,5 @@ export interface IUserRepository {
     user: UserModelView,
     filters: PageOptionsDto,
   ): Promise<PageDto<User>>;
+  getAllUsers(user: UserModelView, search?: string): Promise<User[]>;
 }

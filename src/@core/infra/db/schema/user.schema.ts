@@ -3,8 +3,6 @@ import { Document } from 'mongoose';
 import { BaseSchema } from './base.schema';
 import * as bcrypt from 'bcrypt';
 import { UserType } from './userType.schema';
-import { InterestedArea } from './interestedArea.schema';
-import { Availability } from './availability.schema';
 import { Exclude } from 'class-transformer';
 
 export type UserDocument = User & Document;
@@ -32,21 +30,21 @@ export class User extends BaseSchema {
   @Prop({ type: String, required: false })
   avatarUrl?: string;
 
-  @Prop({ required: false })
-  userType?: UserType;
+  @Prop({ required: true })
+  userType: UserType;
 
   @Prop({ type: String, required: true })
   @Exclude()
   password: string;
 
   @Prop({ required: false })
-  interestedArea?: InterestedArea[];
+  interestedArea?: string[];
 
-  @Prop({ required: false })
+  @Prop({ required: false, default: false })
   availableToPair?: boolean; // students will set this param
 
   @Prop({ required: false })
-  availability?: Availability; // professor will set this param
+  availability?: number; // professor will set this param
 
   @Prop({ required: true, default: false })
   emailConfirmed?: boolean;

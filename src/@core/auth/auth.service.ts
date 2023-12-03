@@ -34,6 +34,7 @@ export class AuthService {
       userType: user.userType.description,
       emailConfirmed: user.emailConfirmed,
       isActive: user.isActive,
+      interestedArea: user.interestedArea,
       year: period?.year,
       period: period?.period,
     };
@@ -59,6 +60,7 @@ export class AuthService {
       avatarUrl: user.avatarUrl,
       userType: user.userType.description,
       emailConfirmed: user.emailConfirmed,
+      interestedArea: user.interestedArea,
       isActive: user.isActive,
       year: period.year,
       period: period.period,

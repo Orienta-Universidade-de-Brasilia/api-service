@@ -4,5 +4,11 @@
       "error": "Invalid request authentication user",
       "success": "user authenticated successfully"
     }
+  },
+  "notify": {
+    "interested": "was interested in your profile",
+    "solicitation": "has solicitated mentory",
+    "pairUp": "has solicited pair up",
+    "match": "There is a match!"
   }
 }

@@ -17,11 +17,11 @@ export class UserModelView {
 
   @IsString()
   @IsOptional()
-  firstName: string;
+  firstName?: string;
 
   @IsString()
   @IsOptional()
-  lastName: string;
+  lastName?: string;
 
   @IsNotEmpty()
   userType: string;
@@ -29,6 +29,9 @@ export class UserModelView {
   @IsNotEmpty()
   @IsBoolean()
   emailConfirmed: boolean;
+
+  @IsOptional()
+  interestedArea?: string[];
 
   @IsNotEmpty()
   @IsBoolean()

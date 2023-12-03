@@ -1,9 +1,17 @@
 import { CampusInformation } from '@infra/db/schema/campusInformation.schema';
 import { Contact } from '@infra/db/schema/contact.schema';
-import { Availability } from '@infra/db/schema/availability.schema';
 import { UserType } from '@infra/db/schema/userType.schema';
 import { BaseModelView } from './base.mv';
 import { User } from '@app/@core/infra/db/schema/user.schema';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class authModelView extends BaseModelView {
   email: string;
@@ -13,6 +21,7 @@ export class authModelView extends BaseModelView {
   avatarUrl?: string;
   userType?: UserType;
   emailConfirmed?: boolean;
+  interestedArea?: string[];
   isActive?: boolean;
   year?: string;
   period?: string;
@@ -20,24 +29,79 @@ export class authModelView extends BaseModelView {
 }
 
 export class GetUserModelView extends BaseModelView {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   firstName?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   lastName?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   fullName?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   globalId?: string;
+
+  @ApiProperty({ required: true })
+  @IsString()
   email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   avatarUrl?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   cellPhone?: string;
+
+  @ApiProperty()
+  @IsEnum({ type: UserType })
   userType: UserType;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
   interestedArea?: string[];
+
+  @ApiProperty({ required: false, default: false })
+  @IsBoolean()
+  @IsOptional()
   availableToPair?: boolean;
-  availability?: Availability;
+
+  availability?: number;
+
   contact?: Contact;
+
   campusInformation?: CampusInformation;
+
+  @ApiProperty({ required: false, default: false })
+  @IsBoolean()
+  @IsOptional()
   emailConfirmed?: boolean;
+
+  @ApiProperty({ required: true })
+  @IsBoolean()
   isActive: boolean;
 
+  @IsString()
+  @IsOptional()
+  recommendation?: string;
+
+  @IsNumber()
+  @IsOptional()
+  recommendationValue?: number;
+
   initialize(model: User) {
-    this._id = model._id;
+    this.id = model.id;
     this.firstName = model.firstName;
     this.lastName = model.lastName;
     this.fullName = model.fullName;
@@ -45,10 +109,11 @@ export class GetUserModelView extends BaseModelView {
     this.avatarUrl = model.avatarUrl;
     this.cellPhone = model.cellPhone;
     this.userType = model.userType;
-    this.interestedArea = model.interestedArea.map((area) => area.description);
+    this.interestedArea = model.interestedArea.map((area) => area);
     this.availableToPair = model.availableToPair;
     this.availability = model.availability;
     this.emailConfirmed = model.emailConfirmed;
     this.isActive = model.isActive;
+    this.recommendation = '';
   }
 }

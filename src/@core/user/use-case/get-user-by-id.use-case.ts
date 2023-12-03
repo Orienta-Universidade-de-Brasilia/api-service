@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import {
   IUserRepository,
   UserRepositoryKey,
@@ -15,6 +15,13 @@ export class GetUserByIdUseCase {
   async execute(id: string): Promise<GetUserModelView> {
     const response = await this.userRepository.getById(id);
 
-    return response as unknown as GetUserModelView;
+    if (!response) {
+      throw new BadRequestException('Cannot find user with this Id');
+    }
+
+    const view = new GetUserModelView();
+    view.initialize(response);
+
+    return view;
   }
 }

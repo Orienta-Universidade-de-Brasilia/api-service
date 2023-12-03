@@ -20,11 +20,6 @@ export class PartialCreateUserDto {
   lastName: string;
 
   @ApiProperty()
-  @IsString()
-  @IsOptional()
-  fullName?: string;
-
-  @ApiProperty()
   @IsNotEmpty()
   @IsPhoneNumber('BR')
   cellPhone: string;
@@ -32,15 +27,15 @@ export class PartialCreateUserDto {
   @ApiProperty()
   @ArrayNotEmpty()
   @ArrayMinSize(3)
-  interestArea: string[];
+  interestedArea: string[];
 
   @ApiProperty({ required: false, default: false })
   @IsOptional()
-  avaliableToPair?: boolean;
+  availableToPair?: boolean;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  availability?: string;
+  availability?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

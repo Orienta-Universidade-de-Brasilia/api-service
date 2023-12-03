@@ -9,7 +9,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { GetUserModelView } from './model-view/get-user.mv';
@@ -19,7 +19,6 @@ import { GetUserTypeModelView } from './model-view/get-user-type.mv';
 import { Requester } from '@app/common/decorators/user.decorator';
 import { UserModelView } from '../auth/model-view/user.mv';
 import { JwtAuthGuard } from '@app/common/guards/jwt-auth.guard';
-import { PageDto, PageOptionsDto } from '../common/dto';
 import { Public } from '@app/common/decorators/auth.decorator';
 
 @ApiTags('User')
@@ -30,6 +29,7 @@ export class UserController {
 
   @Post()
   @Public()
+  @ApiCreatedResponse({ type: GetUserModelView })
   async createUser(@Body() dto: CreateUserDto): Promise<GetUserModelView> {
     try {
       return await this.userService.createUser(dto);
@@ -44,6 +44,19 @@ export class UserController {
   ): Promise<GetUserTypeModelView> {
     try {
       return await this.userService.createUserType(dto);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get()
+  async recommendUser(
+    @Requester(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserModelView,
+    @Query('search') search?: string,
+  ) {
+    try {
+      return await this.userService.recommendUser(user, search);
     } catch (error) {
       throw error;
     }
@@ -71,16 +84,17 @@ export class UserController {
     }
   }
 
-  @Get()
-  async listUsers(
-    @Requester(new ValidationPipe({ validateCustomDecorators: true }))
-    user: UserModelView,
-    @Query() filters: PageOptionsDto,
-  ): Promise<PageDto<GetUserModelView>> {
-    try {
-      return await this.userService.listUsers(user, filters);
-    } catch (error) {
-      throw error;
-    }
-  }
+  // depreciated
+  // @Get()
+  // async listUsers(
+  //   @Requester(new ValidationPipe({ validateCustomDecorators: true }))
+  //   user: UserModelView,
+  //   @Query() filters: PageOptionsDto,
+  // ): Promise<PageDto<GetUserModelView>> {
+  //   try {
+  //     return await this.userService.listUsers(user, filters);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }

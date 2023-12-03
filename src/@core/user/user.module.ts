@@ -11,17 +11,21 @@ import { PartialCreateUserUseCase } from './use-case/partial-create-user.use-cas
 import { UserFeature } from '@infra/db/imports/user';
 import { CreateUserTypeUseCase } from './use-case/create-user-type.use-case';
 import { ListUsersUseCase } from './use-case/list-users.use-case';
+import { GetAllUseCase } from './use-case/get-all.use-case';
+import { SetRecommendationUseCase } from './use-case/set-recommendation.use-case';
 
 @Module({
   imports: [MongooseModule.forFeature(UserFeature)],
   controllers: [UserController],
   providers: [
     PartialCreateUserUseCase,
+    SetRecommendationUseCase,
     GetUserByEmailUseCase,
     GetUserByIdUseCase,
     CreateUserTypeUseCase,
     CreateUserUseCase,
     ListUsersUseCase,
+    GetAllUseCase,
     UserService,
     {
       useClass: UserRepository,

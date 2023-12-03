@@ -2,8 +2,8 @@ import { ErrorsInterceptor } from '@common/interceptors/errors.interceptor';
 import { SwaggerService } from '@common/swagger/swagger.service';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from 'src/app.module';
 import { ConfigService } from './configuration.config';
+import { AppModule } from '@app/app.module';
 
 export class ServerConfig {
   private configService: ConfigService;
@@ -26,7 +26,9 @@ export class ServerConfig {
     await app
       .listen(port)
       .then(() => {
-        console.log(`Listening on port: ${port}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`Listening on port: http://localhost:${port}`);
+        }
       })
       .catch((err) => {
         console.log(`Unable to stabilish connection:: ${err.message}`);

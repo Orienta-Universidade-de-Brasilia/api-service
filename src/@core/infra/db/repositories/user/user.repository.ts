@@ -9,6 +9,7 @@ import { UserType, UserTypeDocument } from '../../schema/userType.schema';
 import { Code, CodeDocument } from '../../schema/code.schema';
 import { UserModelView } from '@app/@core/auth/model-view/user.mv';
 import { PageDto, PageMetaDto, PageOptionsDto } from '@app/@core/common/dto';
+import { UserTypeEnum } from '@app/@core/user/types/user.types';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -30,7 +31,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async getById(id: string): Promise<User> {
-    return await this.userModel.findOne({ _id: id });
+    return await this.userModel.findOne({ _id: id }).lean();
   }
 
   async createUserType(dto: string): Promise<UserType> {
@@ -45,7 +46,7 @@ export class UserRepository implements IUserRepository {
   async partialCreate(id: string, dto: PartialCreateUserDto): Promise<number> {
     const partialCreate = await this.userModel.updateOne(
       { _id: id },
-      { $set: dto },
+      { $set: { ...dto, fullName: `${dto.firstName} ${dto.lastName}` } },
     );
 
     return partialCreate.modifiedCount;
@@ -132,5 +133,49 @@ export class UserRepository implements IUserRepository {
     });
 
     return new PageDto(entities, pageMetaDto);
+  }
+
+  async getAllUsers(user: UserModelView, search?: string): Promise<User[]> {
+    let baseQuery = {
+      _id: {
+        $ne: user.id,
+      },
+    };
+    if (user.userType === UserTypeEnum.PROFESSOR) {
+      const filter = {
+        'userType.description': UserTypeEnum.STUDENT,
+      };
+
+      baseQuery = { ...baseQuery, ...filter };
+    } else if (user.userType === UserTypeEnum.STUDENT) {
+      const filter = {
+        $or: [
+          {
+            $and: [
+              { 'userType.description': UserTypeEnum.STUDENT },
+              { availableToPair: true },
+            ],
+          },
+          {
+            'userType.description': UserTypeEnum.PROFESSOR,
+          },
+        ],
+      };
+
+      baseQuery = { ...baseQuery, ...filter };
+    }
+
+    if (search && search.length > 0) {
+      const searchQuery = {
+        interestedArea: {
+          $in: [search],
+        },
+      };
+      baseQuery = { ...baseQuery, ...searchQuery };
+    }
+
+    const response = await this.userModel.find(baseQuery).lean();
+
+    return response;
   }
 }

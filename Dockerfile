@@ -4,7 +4,7 @@ FROM node:18-alpine AS build
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
+COPY tsconfig.* ./
 RUN npm install
 
 COPY . .

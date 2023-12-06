@@ -1,5 +1,3 @@
-import { CampusInformation } from '@infra/db/schema/campusInformation.schema';
-import { Contact } from '@infra/db/schema/contact.schema';
 import { UserType } from '@infra/db/schema/userType.schema';
 import { BaseModelView } from './base.mv';
 import { User } from '@app/@core/infra/db/schema/user.schema';
@@ -29,6 +27,10 @@ export class authModelView extends BaseModelView {
 }
 
 export class GetUserModelView extends BaseModelView {
+  @ApiProperty()
+  @IsString()
+  id: string;
+
   @ApiProperty()
   @IsString()
   @IsOptional()
@@ -79,10 +81,6 @@ export class GetUserModelView extends BaseModelView {
 
   availability?: number;
 
-  contact?: Contact;
-
-  campusInformation?: CampusInformation;
-
   @ApiProperty({ required: false, default: false })
   @IsBoolean()
   @IsOptional()
@@ -101,7 +99,7 @@ export class GetUserModelView extends BaseModelView {
   recommendationValue?: number;
 
   initialize(model: User) {
-    this.id = model.id;
+    this.id = model._id;
     this.firstName = model.firstName;
     this.lastName = model.lastName;
     this.fullName = model.fullName;
@@ -114,6 +112,6 @@ export class GetUserModelView extends BaseModelView {
     this.availability = model.availability;
     this.emailConfirmed = model.emailConfirmed;
     this.isActive = model.isActive;
-    this.recommendation = '';
+    this.recommendation = undefined;
   }
 }

@@ -54,7 +54,7 @@ export class UserController {
     @Requester(new ValidationPipe({ validateCustomDecorators: true }))
     user: UserModelView,
     @Query('search') search?: string,
-  ) {
+  ): Promise<GetUserModelView[]> {
     try {
       return await this.userService.recommendUser(user, search);
     } catch (error) {

@@ -48,7 +48,7 @@ export class InterestingRelationRepository
     dto: InterestingDto,
     user: UserModelView,
   ): Promise<InterestingRelation> {
-    const response = await this.interestingRelationModel
+    const activeResponse = await this.interestingRelationModel
       .findOne({
         userId: user.id,
         targetId: dto.targetId,
@@ -57,7 +57,20 @@ export class InterestingRelationRepository
       })
       .lean();
 
-    return response;
+    if (activeResponse) {
+      return activeResponse;
+    }
+
+    const passiveResponse = await this.interestingRelationModel
+      .findOne({
+        userId: dto.targetId,
+        targetId: user.id,
+        period: user.period,
+        year: user.year,
+      })
+      .lean();
+
+    return passiveResponse;
   }
 
   async getByParticipantIds(dto: interestDto): Promise<InterestingRelation> {

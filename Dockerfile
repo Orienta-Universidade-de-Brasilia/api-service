@@ -1,9 +1,6 @@
-ARG NODE_VERSION=18-alpine
-ARG NPM_VERSION=9
+FROM node:18-alpine
 
-FROM node:${NODE_VERSION}
-
-RUN npm install -g npm@${NPM_VERSION}
+RUN npm install -g npm@latest
 
 WORKDIR /app
 

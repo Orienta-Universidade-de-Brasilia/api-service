@@ -10,6 +10,7 @@ import { Code, CodeDocument } from '../../schema/code.schema';
 import { UserModelView } from '@app/@core/auth/model-view/user.mv';
 import { PageDto, PageMetaDto, PageOptionsDto } from '@app/@core/common/dto';
 import { UserTypeEnum } from '@app/@core/user/types/user.types';
+import { StringHelper } from '@app/@core/utils/string-helper';
 
 @Injectable()
 export class UserRepository implements IUserRepository {
@@ -168,7 +169,7 @@ export class UserRepository implements IUserRepository {
     if (search && search.length > 0) {
       const searchQuery = {
         interestedArea: {
-          $in: [search],
+          $regex: StringHelper.regex(search),
         },
       };
       baseQuery = { ...baseQuery, ...searchQuery };

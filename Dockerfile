@@ -5,6 +5,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY tsconfig.* ./
+
 RUN npm install
 
 COPY . .
@@ -28,7 +29,7 @@ COPY package*.json ./
 
 RUN npm install --only=production
 
-RUN rm package*.json
+# RUN rm package*.json
 
 EXPOSE 3000
 

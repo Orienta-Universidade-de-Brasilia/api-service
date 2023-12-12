@@ -34,14 +34,11 @@ export class SetRecommendationUseCase {
     currentUser: UserModelView,
     user: GetUserModelView,
   ): number {
-    const set1 = new Set(currentUser.interestedArea);
-    const set2 = new Set(user.interestedArea);
-
-    const intersection = new Set(
-      [...set1].filter((interesection) => set2.has(interesection)),
+    const intersection = currentUser.interestedArea.filter((value) =>
+      user.interestedArea.includes(value),
     );
-    const union = new Set([...set1, ...set2]);
 
-    return intersection.size / union.size;
+    const similarity = intersection.length / currentUser.interestedArea.length;
+    return similarity;
   }
 }

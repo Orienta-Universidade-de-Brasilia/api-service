@@ -3,8 +3,7 @@ import { InterestingRelation } from '@app/@core/infra/db/schema/interesting-rela
 import { InterestingDto } from '@app/@core/match/dto/interesting.dto';
 
 export type interestDto = {
-  userId: string;
-  targetId: string;
+  participants: string[];
   year: number;
   period: number;
 };

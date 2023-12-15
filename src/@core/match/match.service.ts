@@ -42,7 +42,8 @@ export class MatchService {
           event: EventMessage.MATCH,
           message: `${message.notify.match}`,
         },
-        user,
+        undefined,
+        [user.id, dto.targetId],
       );
     }
   }

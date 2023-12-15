@@ -42,14 +42,13 @@ export class CreateInterestUseCase {
     if (targetUser) {
       const hasInterestBefore =
         await this.interestedRepository.getByParticipantIds({
-          targetId: user.id,
-          userId: targetUser._id,
+          participants: [dto.targetId, user.id],
           period: user.period,
           year: user.year,
         });
       if (
         hasInterestBefore &&
-        hasInterestBefore.targetId === user.id &&
+        hasInterestBefore.participants[1] === user.id &&
         !hasInterestBefore.targetInterest
       ) {
         const updated = await this.interestedRepository.updateInterest(
@@ -78,39 +77,40 @@ export class CreateInterestUseCase {
 
         return { updated };
       }
-      if (hasInterestBefore && hasInterestBefore.targetId !== user.id) {
+      if (hasInterestBefore && hasInterestBefore.participants[1] !== user.id) {
         throw new BadRequestException(
           'The action of interest has already been carried out',
         );
       }
-      const interest = await this.interestedRepository.create({
-        targetId: targetUser._id,
-        userId: user.id,
-        period: user.period,
-        year: user.year,
-      });
+      if (!hasInterestBefore) {
+        const interest = await this.interestedRepository.create({
+          participants: [user.id, targetUser._id.toString()],
+          period: user.period,
+          year: user.year,
+        });
 
-      const target = {
-        period: user.period,
-        year: user.year,
-        id: targetUser._id,
-        userType: targetUser.userType.description,
-        email: targetUser.email,
-        emailConfirmed: targetUser.emailConfirmed,
-        isActive: targetUser.isActive,
-      } satisfies UserModelView;
+        const target = {
+          period: user.period,
+          year: user.year,
+          id: targetUser._id.toString(),
+          userType: targetUser.userType.description,
+          email: targetUser.email,
+          emailConfirmed: targetUser.emailConfirmed,
+          isActive: targetUser.isActive,
+        } satisfies UserModelView;
 
-      await this.createNotification(
-        {
-          targetId: dto.targetId,
-          message: `${user.firstName} ${user.lastName} ${message.notify.interested}`,
-        },
-        target,
-      );
-      return {
-        targetUser: interest.targetId,
-        activeUser: interest.userId,
-      };
+        await this.createNotification(
+          {
+            targetId: dto.targetId,
+            message: `${user.firstName} ${user.lastName} ${message.notify.interested}`,
+          },
+          target,
+        );
+        return {
+          activeUser: interest.participants[0],
+          targetUser: interest.participants[1],
+        };
+      }
     } else {
       throw new BadRequestException(
         'There is no participant with this attributes',
@@ -122,6 +122,7 @@ export class CreateInterestUseCase {
     await this.notificationService.emitter(
       { event: EventMessage.NOTIFY, message: dto.message },
       targetUser,
+      undefined,
     );
   }
 }

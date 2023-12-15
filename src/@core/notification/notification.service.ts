@@ -18,9 +18,15 @@ export class NotificationService {
     private readonly notifyRepository: INotifyRepository,
   ) {}
 
-  async emitter(dto: EventMessageDto, user: UserModelView): Promise<void> {
+  async emitter(
+    dto: EventMessageDto,
+    user?: UserModelView,
+    participants?: string[],
+  ): Promise<void> {
     const notifyInstance = new Notify();
-    notifyInstance.userId = user.id;
+    notifyInstance.userId = user ? user.id : undefined;
+    notifyInstance.participants =
+      participants && participants.length ? participants : undefined;
     notifyInstance.event = dto.event;
     notifyInstance.message = dto.message;
     await this.eventEmitter.emit(dto.event, notifyInstance);
@@ -29,7 +35,12 @@ export class NotificationService {
   @OnEvent(EventMessage.NOTIFY, { async: true })
   async createNotification(notification: Notify): Promise<void> {
     const { userId, event, message } = notification;
-    const response = await this.notifyRepository.create(userId, event, message);
+    const response = await this.notifyRepository.create(
+      event,
+      userId,
+      undefined,
+      message,
+    );
 
     if (!response) {
       CustomLogger.EventError(
@@ -40,8 +51,13 @@ export class NotificationService {
   }
   @OnEvent(EventMessage.MATCH, { async: true })
   async createMatch(notification: Notify): Promise<void> {
-    const { userId, event, message } = notification;
-    const response = await this.notifyRepository.create(userId, event, message);
+    const { participants, event, message } = notification;
+    const response = await this.notifyRepository.create(
+      event,
+      undefined,
+      participants,
+      message,
+    );
 
     if (!response) {
       CustomLogger.EventError(
@@ -53,7 +69,12 @@ export class NotificationService {
   @OnEvent(EventMessage.SOLICITATION, { async: true })
   async createSolicitation(notification: Notify): Promise<void> {
     const { userId, event, message } = notification;
-    const response = await this.notifyRepository.create(userId, event, message);
+    const response = await this.notifyRepository.create(
+      event,
+      userId,
+      undefined,
+      message,
+    );
 
     if (!response) {
       CustomLogger.EventError(
@@ -66,14 +87,12 @@ export class NotificationService {
   }
 
   async getNotificationsByUserId(
-    userId: string,
-    period: number,
-    year: number,
+    user: UserModelView,
   ): Promise<NotificationsModelView> {
     const response = await this.notifyRepository.getNotificationsByUserId(
-      userId,
-      period,
-      year,
+      user.id,
+      user.period,
+      user.year,
     );
 
     if (!response.length) {

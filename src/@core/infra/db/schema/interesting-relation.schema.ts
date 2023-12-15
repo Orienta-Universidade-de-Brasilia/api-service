@@ -7,10 +7,7 @@ export type InterestingRelationDocument = InterestingRelation & Document;
 @Schema()
 export class InterestingRelation extends BaseSchema {
   @Prop({ required: false })
-  userId: string;
-
-  @Prop({ required: false })
-  targetId: string; // can be a professor or a student to create a pair up
+  participants: string[];
 
   @Prop({ required: false, default: false })
   userInterest: boolean;

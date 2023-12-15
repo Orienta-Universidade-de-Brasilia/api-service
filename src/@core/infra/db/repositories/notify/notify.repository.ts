@@ -12,13 +12,15 @@ export class NotifyRepository implements INotifyRepository {
     private readonly notifyModel: Model<NotifyDocument>,
   ) {}
   async create(
-    userId: string,
     event: `${EventMessage}`,
-    message: string | string[],
+    userId?: string,
+    participants?: string[],
+    message?: string,
   ): Promise<Notify> {
     const model = new this.notifyModel({
-      userId,
       event,
+      userId,
+      participants,
       message,
     });
     return await model.save();
@@ -29,13 +31,18 @@ export class NotifyRepository implements INotifyRepository {
     period: number,
     year: number,
   ): Promise<Notify[]> {
-    return await this.notifyModel
-      .find({
-        userId,
-        period,
-        year,
-      })
-      .lean();
+    const notifications = await this.notifyModel
+      .aggregate([
+        {
+          $match: {
+            $or: [{ userId: userId }, { participants: userId }],
+            period: period,
+            year: year,
+          },
+        },
+      ])
+      .exec();
+    return notifications;
   }
   async getNotificationOnTarget(
     userId: string,

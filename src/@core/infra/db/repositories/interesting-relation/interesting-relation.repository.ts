@@ -22,8 +22,7 @@ export class InterestingRelationRepository
   ) {}
   async create(dto: interestDto): Promise<InterestingRelation> {
     const model = new this.interestingRelationModel({
-      userId: dto.userId,
-      targetId: dto.targetId,
+      participants: dto.participants,
       userInterest: true,
       year: dto.year,
       period: dto.period,
@@ -50,33 +49,21 @@ export class InterestingRelationRepository
   ): Promise<InterestingRelation> {
     const activeResponse = await this.interestingRelationModel
       .findOne({
-        userId: user.id,
-        targetId: dto.targetId,
+        participants: { $in: [user.id, dto.targetId] },
         period: user.period,
         year: user.year,
       })
       .lean();
 
-    if (activeResponse) {
-      return activeResponse;
-    }
-
-    const passiveResponse = await this.interestingRelationModel
-      .findOne({
-        userId: dto.targetId,
-        targetId: user.id,
-        period: user.period,
-        year: user.year,
-      })
-      .lean();
-
-    return passiveResponse;
+    return activeResponse;
   }
 
   async getByParticipantIds(dto: interestDto): Promise<InterestingRelation> {
     return await this.interestingRelationModel
       .findOne({
-        ...dto,
+        participants: {
+          $in: dto.participants,
+        },
       })
       .lean();
   }

@@ -12,5 +12,5 @@ export class EventMessageDto {
   event: `${EventMessage}`;
 
   @IsOptional()
-  message?: string | string[];
+  message?: string;
 }

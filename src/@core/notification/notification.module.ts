@@ -5,13 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Notify, NotifySchema } from '../infra/db/schema/notification.schema';
 import { NotifyRepository } from '../infra/db/repositories/notify/notify.repository';
 import { NotifyRepositoryKey } from '../interfaces/notify/notify.interface';
+import { NotificationsController } from './notification.controller';
 
 @Module({
   imports: [
     EventEmitterModule.forRoot(),
     MongooseModule.forFeature([{ name: Notify.name, schema: NotifySchema }]),
   ],
-  controllers: [],
+  controllers: [NotificationsController],
   providers: [
     NotificationService,
     {

@@ -4,9 +4,10 @@ import { EventMessage } from '@app/@core/notification/dto/event-message.dto';
 export const NotifyRepositoryKey = 'INotifyRepositoryKey';
 export interface INotifyRepository {
   create(
-    userId: string,
     event: `${EventMessage}`,
-    message?: string | string[],
+    userId?: string,
+    participants?: string[],
+    message?: string,
   ): Promise<Notify>;
   getNotificationsByUserId(
     userId: string,

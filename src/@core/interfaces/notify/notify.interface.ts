@@ -9,11 +9,7 @@ export interface INotifyRepository {
     participants?: string[],
     message?: string,
   ): Promise<Notify>;
-  getNotificationsByUserId(
-    userId: string,
-    period: number,
-    year: number,
-  ): Promise<Notify[]>;
+  getNotificationsByUserId(userId: string): Promise<Notify[]>;
   getNotificationOnTarget(
     userId: string,
     targetId: string,

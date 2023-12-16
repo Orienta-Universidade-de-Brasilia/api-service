@@ -10,6 +10,7 @@ import {
 } from './model-view/interesting.mv';
 import { EventMessage } from '../notification/dto/event-message.dto';
 import * as message from '@app/common/messages/response-messages.json';
+import { GetUserByIdUseCase } from '../user/use-case/get-user-by-id.use-case';
 
 @Injectable()
 export class MatchService {
@@ -17,6 +18,7 @@ export class MatchService {
     private readonly notificationService: NotificationService,
     private readonly createInterestUseCase: CreateInterestUseCase,
     private readonly getInterestUseCase: GetInterestUseCase,
+    private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
 
   async createInterest(
@@ -37,10 +39,13 @@ export class MatchService {
   async validateMatch(dto: InterestingDto, user: UserModelView): Promise<void> {
     const interestedRelation = await this.getInterestUseCase.execute(dto, user);
     if (interestedRelation.userInterest && interestedRelation.targetInterest) {
+      const target = await this.getUserByIdUseCase.execute(
+        interestedRelation.participants.find((id) => id !== user.id),
+      );
       await this.notificationService.emitter(
         {
           event: EventMessage.MATCH,
-          message: `${message.notify.match}`,
+          message: `${message.notify.match},${user.email},${target.email}`,
         },
         undefined,
         [user.id, dto.targetId],

@@ -62,7 +62,8 @@ export class InterestingRelationRepository
     return await this.interestingRelationModel
       .findOne({
         participants: {
-          $in: dto.participants,
+          $size: 2,
+          $all: dto.participants,
         },
       })
       .lean();

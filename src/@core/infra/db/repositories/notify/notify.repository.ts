@@ -26,18 +26,19 @@ export class NotifyRepository implements INotifyRepository {
     return await model.save();
   }
 
-  async getNotificationsByUserId(
-    userId: string,
-    period: number,
-    year: number,
-  ): Promise<Notify[]> {
+  async getNotificationsByUserId(userId: string): Promise<Notify[]> {
     const notifications = await this.notifyModel
       .aggregate([
         {
           $match: {
-            $or: [{ userId: userId }, { participants: userId }],
-            period: period,
-            year: year,
+            $or: [
+              { userId },
+              {
+                participants: {
+                  $in: [userId],
+                },
+              },
+            ],
           },
         },
       ])

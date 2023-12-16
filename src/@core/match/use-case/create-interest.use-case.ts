@@ -37,6 +37,10 @@ export class CreateInterestUseCase {
     dto: InterestingDto,
     user: UserModelView,
   ): Promise<InterestingModelView | UpdateInterestingModelView> {
+    if (user.id === dto.targetId) {
+      throw new BadRequestException('Invalid argument');
+    }
+
     const targetUser = await this.userRepository.getById(dto.targetId);
 
     if (targetUser) {

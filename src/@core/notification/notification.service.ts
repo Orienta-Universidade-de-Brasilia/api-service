@@ -91,8 +91,6 @@ export class NotificationService {
   ): Promise<NotificationsModelView> {
     const response = await this.notifyRepository.getNotificationsByUserId(
       user.id,
-      user.period,
-      user.year,
     );
 
     if (!response.length) {

@@ -32,6 +32,6 @@ import { SetRecommendationUseCase } from './use-case/set-recommendation.use-case
       provide: UserRepositoryKey,
     },
   ],
-  exports: [UserService, UserRepositoryKey],
+  exports: [UserService, UserRepositoryKey, GetUserByIdUseCase],
 })
 export class UserModule {}
